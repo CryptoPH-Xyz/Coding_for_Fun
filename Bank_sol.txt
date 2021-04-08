@@ -4,10 +4,6 @@ import "./Ownable.sol";
 import "./safemath.sol";
 // import "./Destroyable.sol"; - add Destroyable to contract (after Ownable) if this is implemented
 
-interface GovernmentInterface{
-    function addTransaction(address _from, address _to, uint _amount) external payable;
-}
-
 contract Bank is Ownable {
     
     using SafeMath for uint;
