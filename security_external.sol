@@ -1,6 +1,6 @@
 pragma solidity 0.8.2;
 
-contract bank { //Unsafe - allows Re Entrancy
+contract unsafeBank { //Unsafe - allows Re Entrancy
 // Consider the ORDER that it is executed
     
     mapping(address => uint) balance;
@@ -42,7 +42,7 @@ contract solvesReEntrancy {
 
 
 contract attack {
- 
+// trial external contract to attack unsafeBank 
     function start() public {
         //deposit funds to bank
         //call to withdraw();
