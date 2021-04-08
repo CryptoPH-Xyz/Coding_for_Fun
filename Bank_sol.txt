@@ -1,0 +1,62 @@
+pragma solidity 0.7.5;
+
+import "./Ownable.sol";
+// import "./Destroyable.sol"; - add Destroyable to contract (after Ownable) if this is implemented
+
+interface GovernmentInterface{
+    function addTransaction(address _from, address _to, uint _amount) external payable;
+}
+
+contract Bank is Ownable{
+    
+    GovernmentInterface governmentInstance = GovernmentInterface(0xa131AD247055FD2e2aA8b156A11bdEc81b9eAD95);
+ 
+    mapping(address => uint) balance;
+    
+    event depositDone(uint amount, address indexed depositedTo);
+
+    event transferDetails(address indexed depositedFrom, address indexed depositedToAddress, uint amount);
+
+    function deposit() public payable returns(uint){
+        balance[msg.sender] += msg.value; 
+        emit depositDone(msg.value, msg.sender);
+        return balance[msg.sender];
+    }
+    
+    function getBalance() public view returns(uint){
+        return balance[msg.sender];
+    }
+    
+    
+    function withdraw(uint amount) public returns (uint){
+        require(balance[msg.sender] >= amount);
+        balance[msg.sender] -= amount;
+        msg.sender.transfer(amount);
+        return balance[msg.sender];
+    }
+ // this is not working with the Government contract - error: transact to Bank.transfer errored: VM error: revert. revert The transaction has been reverted to the initial state. Note: The called function should be payable if you send value and the value you send should be less than your current balance. Debug the transaction to get more information.
+    function transfer(address recipient, uint amount) public {
+        require(balance[msg.sender] >= amount, "Insufficient funds");
+        require(msg.sender != recipient, "Don't send money to yourself");
+        
+        uint previousSenderBalance = balance[msg.sender];
+        
+        _transfer(msg.sender, recipient, amount);
+        
+        // 1 gwei = 10^9 wei
+        // 1 ether = 10^18 wei
+     
+        //governmentInstance.addTransaction{value: 1 ether}(msg.sender, recipient, amount);
+        
+        governmentInstance.addTransaction(msg.sender, recipient, amount);
+        
+        emit transferDetails(msg.sender, recipient, amount);
+        
+        assert(balance[msg.sender] == previousSenderBalance - amount);
+    }
+    
+    function _transfer(address from, address to, uint amount) private {
+        balance[from] -= amount;
+        balance[to] += amount;
+    }
+}

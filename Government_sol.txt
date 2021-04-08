@@ -1,0 +1,22 @@
+pragma solidity 0.7.5;
+
+// to deploy use this different address 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2
+
+contract Government {
+// struct is object in JavaScript
+    struct Transaction {
+        address from;
+        address to;
+        uint amount;
+        uint txId;
+    }
+    
+    Transaction[] transactionLog;
+// external function will not allow government to "addTransaction", only other contracts can use function "addTransaction"   
+    function addTransaction(address _from, address _to, uint _amount) external {
+        transactionLog.push(Transaction(_from, _to, _amount, transactionLog.length));
+    }
+    function getTransaction(uint _index) public view returns(address, address, uint){
+        return(transactionLog[_index].from, transactionLog[_index].to, transactionLog[_index].amount);
+    }
+}
