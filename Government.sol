@@ -1,6 +1,6 @@
-pragma solidity 0.7.5;
+pragma solidity 0.8.0;
 
-// to deploy use this different address 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2
+// to deploy use this different address (this is an external contract trial)
 
 contract Government {
 // struct is object in JavaScript
